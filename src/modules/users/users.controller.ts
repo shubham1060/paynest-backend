@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Res, HttpStatus, HttpException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res, HttpStatus, HttpException, Headers, UnauthorizedException } from '@nestjs/common';
 import { Response } from 'express';
 import sendResponse from 'src/middleware/sendResponse';
 import { __ } from 'i18n';
@@ -16,6 +16,7 @@ export class UsersController {
   async createUser(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
       try {
           const user = await this.usersService.createUser(createUserDto);
+          console.log(createUserDto);
           const token = this.jwtService.generateToken({ id: user?._id, phoneNumber: user?.phoneNumber});
           return res.status(HttpStatus.OK).send(sendResponse(__('success.create_user'), { data: user, access_token: token  }, true));
       } catch (error) {
@@ -39,5 +40,22 @@ export class UsersController {
   @Get()
   async getAllUsers() {
     return this.usersService.findAll();
+  }
+
+  @Get('me')
+  async getMyProfile(@Headers('authorization') authHeader: string) {
+    if (!authHeader) throw new UnauthorizedException('No token provided');
+
+    const token = authHeader.replace('Bearer ', '');
+    const payload = this.jwtService.decodeToken(token);
+
+    // console.log('Received Token:==53=>', authHeader);
+    // console.log('Decoded Payload:==54=>', payload);
+
+    if (!payload || !payload.id) {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
+
+    return this.usersService.findById(payload.id);
   }
 }

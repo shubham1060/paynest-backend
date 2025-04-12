@@ -12,7 +12,12 @@ export class JwtService {
    * @returns
    */
   generateToken(payload: any): string {
-    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: JWT_EXPIRY});
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error('JWT_SECRET is not defined in environment variables');
+    }
+
+    return jwt.sign(payload, secret, { expiresIn: JWT_EXPIRY });
   }
 
   /**
@@ -21,11 +26,17 @@ export class JwtService {
    * @returns
    */
   decodeToken(token: string): any {
-    try {
-      return jwt.verify(token, process.env.JWT_SECRET);
-    } catch (error) {
-      console.error('Error decoding JWT token:', error);
-      return null;
-    }
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('JWT_SECRET is not defined in environment variables');
   }
+
+  try {
+    return jwt.verify(token, secret);
+  } catch (error) {
+    console.error('Error decoding JWT token:', error);
+    return null;
+  }
+}
+
 }
