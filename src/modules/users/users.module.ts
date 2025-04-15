@@ -10,6 +10,7 @@ import { JwtService } from 'src/services/jwt.service';
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])
   ],
   providers: [UsersService,JwtService],
-  controllers: [UsersController]
+  controllers: [UsersController],
+  exports: [UsersService],
 })
 export class UsersModule {}

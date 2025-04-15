@@ -16,6 +16,10 @@ export class BankDetailsService {
     return newDetails.save();
   }
 
+  async getBankDetailsByUserId(userId: string): Promise<BankDetails[]> {
+    return this.bankDetailsModel.find({ userId }).exec();
+  }
+
   async findAll(): Promise<BankDetails[]> {
     return this.bankDetailsModel.find().exec();
   }

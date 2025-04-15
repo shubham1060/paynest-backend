@@ -7,6 +7,7 @@ import { UsersModule } from './modules/users/users.module';
 import { InvestmentModule } from './invest/invest.module';
 import { BankModule } from './bank/bank.module';
 import { BankDetailsModule } from './bank-details/bank-details.module';
+import { WithdrawalsModule } from './withdraw/withdraw.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { BankDetailsModule } from './bank-details/bank-details.module';
     InvestmentModule,
     BankModule,
     BankDetailsModule,
+    WithdrawalsModule
   ],
   controllers: [AppController],
   providers: [AppService],

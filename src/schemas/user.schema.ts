@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { EncryptService } from 'src/services/encrypt.service';
+import { BankDetails } from './bank-details.schema';
 
 export type UserDocument = User & Document;
 
@@ -45,9 +46,20 @@ export class User extends Document {
 
   createdAt: Date;
   updatedAt: Date;
+
+  bankDetails: BankDetails[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.set('toObject', { virtuals: true });
+UserSchema.set('toJSON', { virtuals: true });
+
+UserSchema.virtual('bankDetails', {
+  ref: 'BankDetails',
+  localField: 'userId',     // <-- this is the string userId like "4000008"
+  foreignField: 'userId',   // <-- also string in BankDetails
+});
 
 UserSchema.pre<UserDocument>('save', async function (next) {
   if (!this.isModified('password')) {

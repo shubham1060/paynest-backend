@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { User } from '../../schemas/user.schema';
+import { FilterQuery, Model } from 'mongoose';
+import { User, UserDocument } from '../../schemas/user.schema';
 import { CreateUserDto } from './user.dto';
 import { EncryptService } from 'src/services/encrypt.service';
 import { JwtService } from 'src/services/jwt.service';
@@ -72,6 +72,19 @@ export class UsersService {
       throw new HttpException(error.message || "Internal Server Error", error.status || HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  async findOne(query: Partial<UserDocument>) {
+    return this.userModel.findOne(query as FilterQuery<User>);
+  }
+
+  async findByUserIdWithBankDetails(userId: string): Promise<User> {
+    const user = await this.userModel.findOne({ userId }).populate('bankDetails').exec();
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    return user;
+  }
+  
   async findAll(): Promise<User[]> {
     return this.userModel.find().exec();
   }

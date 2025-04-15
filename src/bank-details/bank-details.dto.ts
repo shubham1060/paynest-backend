@@ -18,5 +18,7 @@ export class CreateBankDetailsDto {
   @IsString()
   accountNumber: string;
 
+  @IsNotEmpty()
+  @IsString()
   userId: string;
 }
