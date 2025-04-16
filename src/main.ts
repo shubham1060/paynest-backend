@@ -17,8 +17,11 @@ async function bootstrap() {
   app.use(morgan('dev')); 
   app.use(setLanguage);
     // Set up global validation pipe
-  app.useGlobalPipes(new ValidationPipe());
-
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    transform: true,
+  }));
 
   await app.listen(process.env.PORT ?? 3000);
 }

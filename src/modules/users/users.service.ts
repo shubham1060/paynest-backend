@@ -1,10 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import { User, UserDocument } from '../../schemas/user.schema';
 import { CreateUserDto } from './user.dto';
 import { EncryptService } from 'src/services/encrypt.service';
 import { JwtService } from 'src/services/jwt.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -55,12 +56,12 @@ export class UsersService {
 
   async validateUser(phoneNumber: string, password: string): Promise<User | null> {
     try {
-      const user = await this.userModel.findOne({ phoneNumber }).select('+password').lean();
+      const user = await this.userModel.findOne({ phoneNumber }).select('+password');
       if (!user) {
         throw new HttpException('user not found', HttpStatus.NOT_FOUND);
       }
       const isPasswordValid = await EncryptService.comparePassword(password, user.password);
-      console.log('isPasswordValid==57==>', isPasswordValid);
+      console.log('isPasswordValid==64==>', isPasswordValid);
       if (!isPasswordValid) {
         throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
       }
@@ -84,6 +85,27 @@ export class UsersService {
     }
     return user;
   }
+
+  async updateUserProfile(userId: string, updateData: Partial<User>): Promise<User> {
+    const updatedUser = await this.userModel.findOneAndUpdate({ userId: userId }, updateData, { new: true });
+    if (!updatedUser) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    return updatedUser;
+  }
+
+  async resetPasswordWithPhone(phoneNumber: string, newPassword: string) {
+    const user = await this.userModel.findOne({ phoneNumber });
+  
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    user.password = newPassword;
+    await user.save();
+  
+    return { message: 'Password reset successful' };
+  }
+  
   
   async findAll(): Promise<User[]> {
     return this.userModel.find().exec();

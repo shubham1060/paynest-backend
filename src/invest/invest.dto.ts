@@ -1,14 +1,14 @@
 // invest/invest.dto.ts
-import { IsMongoId, IsString } from 'class-validator';
+import { IsMongoId, IsNumber, IsString } from 'class-validator';
 
 export class CreateInvestmentDto {
+  @IsString()
   userId: string;
+
+  @IsString()
   productCode: string;
-  productName: string;
-  investAmount: number;
-  totalEarnings: number;
-  returnPeriodDays: number;
-  periodicReturn: number;
-  earningChancesTotal: number;
+
+  @IsNumber()
+  investAmount: number;  
 }
 

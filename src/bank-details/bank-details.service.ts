@@ -1,5 +1,5 @@
 // src/bank-details/bank-details.service.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { BankDetails, BankDetailsDocument } from '../schemas/bank-details.schema';
@@ -12,8 +12,14 @@ export class BankDetailsService {
   ) {}
 
   async create(createDto: CreateBankDetailsDto): Promise<BankDetails> {
-    const newDetails = new this.bankDetailsModel(createDto);
-    return newDetails.save();
+    try {
+      const newDetails = new this.bankDetailsModel(createDto);
+      console.log('newDetails==17=>', newDetails);
+      return await newDetails.save();
+    } catch (err) {
+      console.error("Mongoose error in create():", err.message);
+      throw new InternalServerErrorException("Bank detail creation failed");
+    }
   }
 
   async getBankDetailsByUserId(userId: string): Promise<BankDetails[]> {

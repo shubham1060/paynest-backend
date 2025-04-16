@@ -8,31 +8,34 @@ export class Investment {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   user: Types.ObjectId;
 
+  @Prop()
+  userId: string;
+
   @Prop({ required: true })
   productCode: string; // e.g., "DA", "DB", "DC", EA1, EA2, EA3
 
-  @Prop({ required: true })
+  @Prop()
   productName: string; // e.g., "Daily Income A"
 
   @Prop({ required: true })
   investAmount: number;
 
-  @Prop({ required: true })
+  @Prop()
   totalEarnings: number;
 
-  @Prop({ required: true })
-  returnPeriodDays: number; // 30 or 31
+  @Prop()
+  returnPeriod: string; // 30 or 31
 
-  @Prop({ required: true })
+  @Prop()
   periodicReturn: number; // daily or monthly earning
 
-  @Prop({ default: 0 })
+  @Prop()
   earningsReceived: number;
 
   @Prop({ default: 0 }) // times earning has been credited
   earningChancesUsed: number;
 
-  @Prop({ required: true })
+  @Prop()
   earningChancesTotal: number; // like 30 for daily or 1 for monthly
 
   @Prop({ default: false })

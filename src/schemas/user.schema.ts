@@ -28,6 +28,9 @@ export class User extends Document {
   @Prop({ default: 0 })
   balance: number;
 
+  @Prop()
+  email: string;
+
   @Prop({
     type: {
       isLinked: { type: Boolean, default: false },

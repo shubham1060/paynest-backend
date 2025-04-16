@@ -6,7 +6,7 @@ export type BankDetailsDocument = BankDetails & Document;
 
 @Schema({ timestamps: true })
 export class BankDetails {
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  @Prop({ type: Types.ObjectId, ref: 'User' })
   user: Types.ObjectId;
 
   @Prop({ required: true })

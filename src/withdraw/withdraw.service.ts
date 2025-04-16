@@ -46,7 +46,7 @@ export class WithdrawalsService {
   }
 
   async getWithdrawalRecordsByUserId(userId: string): Promise<Withdrawal[]> {
-    const records = await this.withdrawalModel.find({ userId }).sort({ createTime: -1 }).lean(); // lean() makes the result plain JS objects
+    const records = await this.withdrawalModel.find({ userId }).sort({ createdAt: -1 }).lean(); // lean() makes the result plain JS objects
 
     return records.map((record) => {
         const withdrawMoney = record.amount;

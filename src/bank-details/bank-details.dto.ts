@@ -21,4 +21,6 @@ export class CreateBankDetailsDto {
   @IsNotEmpty()
   @IsString()
   userId: string;
+
+  user: string;
 }

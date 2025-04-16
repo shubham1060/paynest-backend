@@ -12,12 +12,7 @@ export class EncryptService {
     static async encryptPassword(password: string): Promise<string> {
         return await bcrypt.hash(password, this.saltRounds);
     }
-    // static async encryptPassword(password: string): Promise<string> {
-    //     const salt = await bcrypt.genSalt(this.saltRounds);
-    //     return await bcrypt.hash(password, this.saltRounds);
-    //   }
     
-
     /**
      * Compares a plain text password with a hashed password.
      * @param password - The plain text password to compare.
@@ -25,8 +20,8 @@ export class EncryptService {
      * @returns A promise that resolves to a boolean indicating if the passwords match.
      */
     static async comparePassword(password: string, hashed: string): Promise<boolean> {
-        console.log('Compare input password:', password);
-        console.log('With hashed password:', hashed);
+        console.log('Compare input password:=28==>', password);
+        console.log('With hashed password:=29==>', hashed);
         return await bcrypt.compare(password, hashed);
     }
 

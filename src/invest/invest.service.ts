@@ -14,12 +14,12 @@ export class InvestmentService {
   ) {}
 
   private investmentPlans = {
-    DA: { name: 'Daily Income A', investAmount: 300, totalEarning: 900, returnPeriod: 30, periodicReturn: 30, earningChances: 30, productPurchase:1 },
-    DB: { name: 'Daily Income B', investAmount: 800, totalEarning: 2400, returnPeriod: 30, periodicReturn: 80, earningChances: 30, productPurchase:1 },
-    DC: { name: 'Daily Income C', investAmount: 20000, totalEarning: 55000, returnPeriod: 30, periodicReturn: 1833, earningChances: 30, productPurchase:1 },
-    EA1: { name: 'Eyes of the Future A1', investAmount: 599, totalEarning: 5000, returnPeriod: 30, periodicReturn: 5000, earningChances: 1, productPurchase: 1 },
-    EA2: { name: 'Eyes of the Future A2', investAmount: 1999, totalEarning: 15000, returnPeriod: 30, periodicReturn: 15000, earningChances: 1, productPurchase: 1 },
-    EA3: { name: 'Eyes of the Future A3', investAmount: 50000, totalEarning: 180000, returnPeriod: 30, periodicReturn: 180000, earningChances: 1, productPurchase: 1 },
+    DA: { name: 'Daily Income A', investAmount: 300, totalEarning: 900, returnPeriod: '30 Day', periodicReturn: 30, earningChances: 30, productPurchase:1 },
+    DB: { name: 'Daily Income B', investAmount: 800, totalEarning: 2400, returnPeriod: '30 Day', periodicReturn: 80, earningChances: 30, productPurchase:1 },
+    DC: { name: 'Daily Income C', investAmount: 20000, totalEarning: 55000, returnPeriod: '30 Day', periodicReturn: 1833, earningChances: 30, productPurchase:1 },
+    EA1: { name: 'Eyes of the Future A1', investAmount: 599, totalEarning: 5000, returnPeriod: '1 Month', periodicReturn: 5000, earningChances: 1, productPurchase: 1 },
+    EA2: { name: 'Eyes of the Future A2', investAmount: 1999, totalEarning: 15000, returnPeriod: '1 Month', periodicReturn: 15000, earningChances: 1, productPurchase: 1 },
+    EA3: { name: 'Eyes of the Future A3', investAmount: 50000, totalEarning: 180000, returnPeriod: '1 Month', periodicReturn: 180000, earningChances: 1, productPurchase: 1 },
   };
 
   async purchase(dto: CreateInvestmentDto): Promise<Investment> {
@@ -38,6 +38,13 @@ export class InvestmentService {
       console.error('Investment amount is invalid:', dto.investAmount);
       throw new HttpException('Investment amount is invalid', HttpStatus.BAD_REQUEST);
     }
+
+    // Check if user already purchased this plan
+    const alreadyPurchased = await this.investmentModel.findOne({ user: user._id, productCode: dto.productCode });
+
+    if (alreadyPurchased) {
+      throw new HttpException('You have already purchased this product', HttpStatus.BAD_REQUEST);
+    }
     
     if (user.rechargeAmount < dto.investAmount) {
       throw new HttpException('Insufficient rechargeAmount', HttpStatus.BAD_REQUEST);
@@ -49,16 +56,21 @@ export class InvestmentService {
 
     const investment = new this.investmentModel({
       user: user._id,
+      userId: user.userId,
       productCode: dto.productCode,
       productName: plan.name,
-      investAmount: plan.amount,
-      totalEarnings: plan.total,
-      returnPeriodDays: plan.period,
-      periodicReturn: plan.payout,
-      earningChancesTotal: plan.chances,
+      investAmount: plan.investAmount,
+      totalEarnings: plan.totalEarning,
+      returnPeriod: plan.returnPeriod,
+      periodicReturn: plan.periodicReturn,
+      earningChancesTotal: plan.earningChances,
       nextPayoutDate: new Date(Date.now() + 24 * 60 * 60 * 1000)
     });
 
     return investment.save();
+  }
+
+  async getOrdersByUser(userId: string): Promise<Investment[]> {
+    return this.investmentModel.find({ userId }).sort({ createdAt: -1 }).exec();
   }
 }
