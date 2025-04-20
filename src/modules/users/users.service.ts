@@ -5,7 +5,42 @@ import { User, UserDocument } from '../../schemas/user.schema';
 import { CreateUserDto } from './user.dto';
 import { EncryptService } from 'src/services/encrypt.service';
 import { JwtService } from 'src/services/jwt.service';
-import * as bcrypt from 'bcrypt';
+
+const generatedCodes = new Set();
+
+function generateReferralCode() {
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const digits = '0123456789';
+  let code: unknown;
+
+  do {
+    const letterPart: string[] = [];
+    const digitPart: string[] = [];
+
+    // Generate 3 random letters
+    for (let i = 0; i < 3; i++) {
+      letterPart.push(letters.charAt(Math.floor(Math.random() * letters.length)));
+    }
+
+    // Generate 2 random digits
+    for (let i = 0; i < 2; i++) {
+      digitPart.push(digits.charAt(Math.floor(Math.random() * digits.length)));
+    }
+
+    // Combine and shuffle
+    const combined = [...letterPart, ...digitPart];
+    for (let i = combined.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [combined[i], combined[j]] = [combined[j], combined[i]]; // Shuffle
+    }
+
+    code = combined.join('');
+  } while (generatedCodes.has(code));
+
+  generatedCodes.add(code);
+  console.log('referralcode=43=>', code);
+  return code;
+}
 
 @Injectable()
 export class UsersService {
@@ -29,6 +64,8 @@ export class UsersService {
       const lastUser = await this.userModel.findOne().sort({ userId: -1 });
       const nextUserId = lastUser?.userId ? (parseInt(lastUser.userId) + 1).toString() : '4000001';
 
+      const referralCode  = generateReferralCode();
+      console.log('invitationCode==43==>', referralCode);
       // Create new user with bankAccount and userId
       const newUser = new this.userModel({
         name: dto.name,
@@ -37,6 +74,7 @@ export class UsersService {
         invitationCode: dto.invitationCode,
         userId: nextUserId,
         balance: 0,
+        referralCode,
         bankAccount: {
           isLinked: false,
           bankName: '',

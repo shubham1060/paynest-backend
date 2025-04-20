@@ -31,6 +31,9 @@ export class User extends Document {
   @Prop()
   email: string;
 
+  @Prop({ unique: true })
+  referralCode: string;
+
   @Prop({
     type: {
       isLinked: { type: Boolean, default: false },

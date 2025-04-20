@@ -1,5 +1,5 @@
 // src/bank-details/dto/create-bank-details.dto.ts
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateBankDetailsDto {
   @IsNotEmpty()
@@ -22,5 +22,6 @@ export class CreateBankDetailsDto {
   @IsString()
   userId: string;
 
+  @IsOptional()
   user: string;
 }

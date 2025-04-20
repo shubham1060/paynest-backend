@@ -11,6 +11,6 @@ import { JwtService } from 'src/services/jwt.service';
   ],
   providers: [UsersService,JwtService],
   controllers: [UsersController],
-  exports: [UsersService],
+  exports: [UsersService, MongooseModule],
 })
 export class UsersModule {}

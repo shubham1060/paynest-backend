@@ -8,6 +8,7 @@ import { InvestmentModule } from './invest/invest.module';
 import { BankModule } from './bank/bank.module';
 import { BankDetailsModule } from './bank-details/bank-details.module';
 import { WithdrawalsModule } from './withdraw/withdraw.module';
+import { CommissionModule } from './commission/commission.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { WithdrawalsModule } from './withdraw/withdraw.module';
     InvestmentModule,
     BankModule,
     BankDetailsModule,
-    WithdrawalsModule
+    WithdrawalsModule,
+    CommissionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

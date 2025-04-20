@@ -43,6 +43,8 @@ export class Investment {
 
   @Prop()
   nextPayoutDate: Date;
+
+  createdAt: Date;
 }
 
 export const InvestmentSchema = SchemaFactory.createForClass(Investment);

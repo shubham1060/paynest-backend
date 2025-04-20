@@ -67,10 +67,29 @@ export class InvestmentService {
       nextPayoutDate: new Date(Date.now() + 24 * 60 * 60 * 1000)
     });
 
-    return investment.save();
+    const savedInvestment = await investment.save();
+
+    // ✅ Add this line to trigger referral reward logic
+    await this.handleReferralReward(user.userId, plan.investAmount);
+
+    return savedInvestment;
   }
 
   async getOrdersByUser(userId: string): Promise<Investment[]> {
     return this.investmentModel.find({ userId }).sort({ createdAt: -1 }).exec();
+  }
+
+  async handleReferralReward(buyerUserId: string, productAmount: number) {
+    const buyer = await this.userModel.findOne({ userId: buyerUserId });
+  
+    if (buyer?.invitationCode) {
+      const inviter = await this.userModel.findOne({ referralCode: buyer.invitationCode });
+      
+      if (inviter) {
+        const reward = productAmount * 0.1;
+        inviter.balance += reward;
+        await inviter.save();
+      }
+    }
   }
 }
