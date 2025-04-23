@@ -11,7 +11,7 @@ export class CommissionService {
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(Investment.name) private investmentModel: Model<Investment>,
     @InjectModel(Commission.name) private commissionModel: Model<Commission>,
-  ) {}
+  ) { }
 
   async getCommissionByUser(input: { userId?: string; phoneNumber?: string }) {
     const { userId, phoneNumber } = input;
@@ -38,29 +38,36 @@ export class CommissionService {
       userId: { $in: childUserIds },
     });
 
-    // 4. For each investment, create a commission if it doesn't exist for that product
+    // 4. For each investment, create a commission and credit if it doesn't exist
     for (const investment of childInvestments) {
       const exists = await this.commissionModel.findOne({
         inviterUserId: inviter.userId,
         childUserId: investment.userId,
-        product: investment.productName,  // Ensure commission is unique per product
-        status: 'Pending',  // Only create commissions that are Pending
+        product: investment.productName,
       });
 
       if (!exists) {
-        // Create commission if it doesn't exist
+        const commissionEarned = parseFloat((investment.investAmount * 0.1).toFixed(2));
+
+        // 4.1 Create the commission with status "Credited"
         await this.commissionModel.create({
           inviterUserId: inviter.userId,
           childUserId: investment.userId,
           investAmount: investment.investAmount,
-          commissionEarned: parseFloat((investment.investAmount * 0.1).toFixed(2)),
+          commissionEarned,
           product: investment.productName,
-          date: investment.createdAt,  // Optional but may help with uniqueness
-          status: 'Pending',  // Default status
+          date: investment.createdAt,
+          status: 'Credited',
         });
+
+        // 4.2 Update inviter's balance
+        await this.userModel.updateOne(
+          { userId: inviter.userId },
+          { $inc: { balance: commissionEarned } }
+        );
       }
     }
-
+    
     // 5. Return commission records from DB
     const commissions = await this.commissionModel
       .find({ inviterUserId: inviter.userId })

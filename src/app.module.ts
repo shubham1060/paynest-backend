@@ -9,6 +9,10 @@ import { BankModule } from './bank/bank.module';
 import { BankDetailsModule } from './bank-details/bank-details.module';
 import { WithdrawalsModule } from './withdraw/withdraw.module';
 import { CommissionModule } from './commission/commission.module';
+import { FeedbackModule } from './feedback/feedback.module';
+import { RazorpayController } from './razorpay/razorpay.controller';
+import { RazorpayModule } from './razorpay/razorpay.module';
+import { RechargeModule } from './recharge/recharge.module';
 
 @Module({
   imports: [
@@ -20,8 +24,11 @@ import { CommissionModule } from './commission/commission.module';
     BankDetailsModule,
     WithdrawalsModule,
     CommissionModule,
+    FeedbackModule,
+    RazorpayModule,
+    RechargeModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, RazorpayController],
   providers: [AppService],
 })
 export class AppModule {}
