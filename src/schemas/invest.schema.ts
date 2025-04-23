@@ -41,8 +41,8 @@ export class Investment {
   @Prop({ default: false })
   isCompleted: boolean;
 
-  @Prop()
-  nextPayoutDate: Date;
+  @Prop({ type: Date })
+  nextPayoutDate: Date | null;
 
   createdAt: Date;
 }

@@ -1,11 +1,11 @@
 // invest/invest.controller.ts
 import { Controller, Post, Body, Get, Param } from '@nestjs/common';
-import { InvestmentService } from './invest.service';
+import { InvestmentService, EarningRecord } from './invest.service';
 import { CreateInvestmentDto } from './invest.dto';
 
 @Controller('invest')
 export class InvestmentController {
-  constructor(private readonly investmentService: InvestmentService) {}
+  constructor(private readonly investmentService: InvestmentService) { }
 
   @Post('purchase')
   async purchase(@Body() dto: CreateInvestmentDto) {
@@ -20,6 +20,11 @@ export class InvestmentController {
   @Get('orders/:userId')
   async getOrdersByUser(@Param('userId') userId: string) {
     return this.investmentService.getOrdersByUser(userId);
+  }
+
+  @Get('/earnings/:userId')
+  async getUserEarningRecords(@Param('userId') userId: string): Promise<EarningRecord[]> {
+    return this.investmentService.getEarningRecords(userId);
   }
 
 }
