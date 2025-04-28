@@ -9,7 +9,7 @@ export class BankController {
 
   @Get()
   async getBanks(): Promise<Bank[]> {
-    console.log('Fetching all banks...');
+    // console.log('Fetching all banks...');
     return this.bankService.findAll();
   }
 }

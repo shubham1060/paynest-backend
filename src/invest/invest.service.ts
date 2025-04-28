@@ -215,7 +215,7 @@ export class InvestmentService {
 
       if (dueInvestments.length === 0) return;
 
-      console.log(`⏰ ${dueInvestments.length} investment(s) due between ${nowStart.toISOString()} and ${nowEnd.toISOString()}`);
+      // console.log(`⏰ ${dueInvestments.length} investment(s) due between ${nowStart.toISOString()} and ${nowEnd.toISOString()}`);
 
       for (const investment of dueInvestments) {
         const user = await this.userModel.findOne({ userId: investment.userId });
@@ -248,7 +248,7 @@ export class InvestmentService {
           await investment.save();
           await this.saveEarningRecord({ user, investment, payoutDate: now });
 
-          console.log(`✅ Daily payout: ₹${periodicReturn} credited to ${user.userId}`);
+          // console.log(`✅ Daily payout: ₹${periodicReturn} credited to ${user.userId}`);
         }
 
         else if (isMonthly && investment.earningChancesUsed < 1) {
@@ -264,7 +264,7 @@ export class InvestmentService {
           await investment.save();
           await this.saveEarningRecord({ user, investment, payoutDate: now });
 
-          console.log(`✅ Monthly payout: ₹${periodicReturn} credited to ${user.userId}`);
+          // console.log(`✅ Monthly payout: ₹${periodicReturn} credited to ${user.userId}`);
         }
       }
     } catch (error) {
@@ -281,7 +281,7 @@ export class InvestmentService {
 
   async getEarningRecords(userId: string): Promise<EarningRecord[]> {
     const investments = await this.investmentModel.find({ userId });
-    console.log('investments==247==>', investments);
+    // console.log('investments==247==>', investments);
 
     const records: EarningRecord[] = [];
 

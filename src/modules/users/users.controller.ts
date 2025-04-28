@@ -18,7 +18,7 @@ export class UsersController {
   async createUser(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
     try {
       const user = await this.usersService.createUser(createUserDto);
-      console.log(createUserDto);
+      // console.log(createUserDto);
       const token = this.jwtService.generateToken({ id: user?._id, phoneNumber: user?.phoneNumber });
       return res.status(HttpStatus.OK).send(sendResponse(__('success.create_user'), { data: user, access_token: token }, true));
     } catch (error) {
@@ -55,13 +55,13 @@ export class UsersController {
     const payload = this.jwtService.decodeToken(token);
 
     // console.log('Received Token:==53=>', authHeader);
-    console.log('Decoded Payload:==54=>', payload);
+    // console.log('Decoded Payload:==54=>', payload);
 
     if (!payload || !payload.id) {
       throw new UnauthorizedException('Invalid or expired token');
     }
     const user = await this.usersService.findByUserIdWithBankDetails(payload.userId);
-    console.log('user==62===>', user);
+    // console.log('user==62===>', user);
     if (!user) {
       throw new HttpException(__('error.user_not_found'), HttpStatus.NOT_FOUND);
     }
@@ -72,7 +72,7 @@ export class UsersController {
   @Put('update-profile/:id')
   async updateProfile(@Param('id') userId: string, @Body() updateData: Partial<User>) {
     const updated = await this.usersService.updateUserProfile(userId, updateData);
-    console.log('updated==74==>', updated);
+    // console.log('updated==74==>', updated);
     return { success: true, data: updated };
   }
 

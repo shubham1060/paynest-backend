@@ -14,7 +14,7 @@ export class BankDetailsService {
   async create(createDto: CreateBankDetailsDto): Promise<BankDetails> {
     try {
       const newDetails = new this.bankDetailsModel(createDto);
-      console.log('newDetails==17=>', newDetails);
+      // console.log('newDetails==17=>', newDetails);
       return await newDetails.save();
     } catch (err) {
       console.error("Mongoose error in create():", err.message);
