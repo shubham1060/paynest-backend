@@ -20,8 +20,8 @@ export class EncryptService {
      * @returns A promise that resolves to a boolean indicating if the passwords match.
      */
     static async comparePassword(password: string, hashed: string): Promise<boolean> {
-        console.log('Compare input password:=28==>', password);
-        console.log('With hashed password:=29==>', hashed);
+        // console.log('Compare input password:=28==>', password);
+        // console.log('With hashed password:=29==>', hashed);
         return await bcrypt.compare(password, hashed);
     }
 

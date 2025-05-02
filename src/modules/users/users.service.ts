@@ -38,7 +38,7 @@ function generateReferralCode() {
   } while (generatedCodes.has(code));
 
   generatedCodes.add(code);
-  console.log('referralcode=43=>', code);
+  // console.log('referralcode=43=>', code);
   return code;
 }
 
@@ -65,7 +65,7 @@ export class UsersService {
       const nextUserId = lastUser?.userId ? (parseInt(lastUser.userId) + 1).toString() : '4000001';
 
       const referralCode  = generateReferralCode();
-      console.log('invitationCode==43==>', referralCode);
+      // console.log('invitationCode==43==>', referralCode);
       // Create new user with bankAccount and userId
       const newUser = new this.userModel({
         name: dto.name,
@@ -82,7 +82,7 @@ export class UsersService {
           ifsc: '',
         },
       });
-      console.log('newUser=40===>', newUser);
+      // console.log('newUser=40===>', newUser);
       return newUser.save();
     } catch (error) {
       if (error instanceof HttpException) {
@@ -99,7 +99,7 @@ export class UsersService {
         throw new HttpException('user not found', HttpStatus.NOT_FOUND);
       }
       const isPasswordValid = await EncryptService.comparePassword(password, user.password);
-      console.log('isPasswordValid==64==>', isPasswordValid);
+      // console.log('isPasswordValid==64==>', isPasswordValid);
       if (!isPasswordValid) {
         throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
       }

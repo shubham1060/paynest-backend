@@ -9,7 +9,7 @@ export class InvestmentController {
 
   @Post('purchase')
   async purchase(@Body() dto: CreateInvestmentDto) {
-    console.log('Received DTO==12==>', dto);
+    // console.log('Received DTO==12==>', dto);
     const investment = await this.investmentService.purchase(dto);
     return {
       message: 'Investment successful',

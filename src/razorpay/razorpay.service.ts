@@ -23,7 +23,7 @@ export class RazorpayService {
       payment_capture: 1,
     };
 
-    console.log('options=25==>',options);
+    // console.log('options=25==>',options);
 
     return await this.razorpay.orders.create(options);
   }
@@ -39,7 +39,7 @@ export class RazorpayService {
       .update(body)
       .digest('hex');
 
-    console.log('expectedSignature==42=>',expectedSignature);  
+    // console.log('expectedSignature==42=>',expectedSignature);  
 
     return expectedSignature === signature;
   }
