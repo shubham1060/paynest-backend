@@ -12,7 +12,7 @@ async function bootstrap() {
       origin: '*',
       credentials: true,
       allowedHeaders: ['Content-Type', 'Authorization'],
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     });
   app.use(morgan('dev')); 
   app.use(setLanguage);

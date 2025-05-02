@@ -27,6 +27,6 @@ export class BankDetailsService {
   }
 
   async findAll(): Promise<BankDetails[]> {
-    return this.bankDetailsModel.find().exec();
+    return this.bankDetailsModel.find().sort({ createdAt: -1 }).exec();
   }
 }

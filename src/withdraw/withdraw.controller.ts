@@ -35,5 +35,9 @@ export class WithdrawalController {
         throw new HttpException( error.message || 'Failed to fetch withdrawals', HttpStatus.INTERNAL_SERVER_ERROR,);
       }
     }
+    @Get()
+    async getAllWithdrawals() {
+      return await this.withdrawalService.findAll();
+    }
 
 }

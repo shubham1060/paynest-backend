@@ -34,6 +34,9 @@ export class User extends Document {
   @Prop({ unique: true })
   referralCode: string;
 
+  @Prop({ type: Boolean, default: false })
+  isAdmin: boolean;
+
   @Prop({
     type: {
       isLinked: { type: Boolean, default: false },
@@ -69,13 +72,13 @@ UserSchema.virtual('bankDetails', {
 
 UserSchema.pre<UserDocument>('save', async function (next) {
   if (!this.isModified('password')) {
-      return next();
+    return next();
   }
   try {
-      this.password = await EncryptService.encryptPassword(this.password);
-      next();
+    this.password = await EncryptService.encryptPassword(this.password);
+    next();
   } catch (err) {
-      next(err);
+    next(err);
   }
 });
 

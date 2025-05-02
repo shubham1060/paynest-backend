@@ -28,8 +28,10 @@ export class BankDetailsController {
   }
 
   @Get()
-  async findAll() {
-    return this.bankDetailsService.findAll();
+  async getAllBankDetails() {
+    const data = await this.bankDetailsService.findAll();
+    // console.log('all data=33=>', data);
+    return { success: true, data };
   }
 
   @Get('my-bank-details')
