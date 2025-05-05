@@ -31,7 +31,7 @@ export class UsersController {
   async login(@Body() loginDto: { phoneNumber: string; password: string }, @Res() res: Response) {
     try {
       const user = await this.usersService.validateUser(loginDto.phoneNumber, loginDto.password);
-      const token = this.jwtService.generateToken({ id: user?._id, phoneNumber: user?.phoneNumber, userId: user?.userId });
+      const token = this.jwtService.generateToken({ id: user?._id, phoneNumber: user?.phoneNumber, userId: user?.userId, isAdmin: user?.isAdmin || false });
       if (!user) {
         throw new UnauthorizedException(__('error.invalid_credentials'));
       }

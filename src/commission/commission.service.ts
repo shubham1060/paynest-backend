@@ -85,4 +85,8 @@ export class CommissionService {
       commissionRecords: commissions,
     };
   }
+
+  async findAll(): Promise<Commission[]> {
+    return this.commissionModel.find().sort({ createdAt: -1 }).exec(); // optional: sort newest first
+  }
 }

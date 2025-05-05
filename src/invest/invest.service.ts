@@ -322,4 +322,8 @@ export class InvestmentService {
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
     );
   }
+
+  async findAll(): Promise<Investment[]> {
+    return this.investmentModel.find().populate('user', 'name email').exec();
+  }
 }

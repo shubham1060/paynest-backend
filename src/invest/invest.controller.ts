@@ -27,4 +27,9 @@ export class InvestmentController {
     return this.investmentService.getEarningRecords(userId);
   }
 
+  @Get()
+  async getAllInvestments() {
+    return await this.investmentService.findAll();
+  }
+
 }

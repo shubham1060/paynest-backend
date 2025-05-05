@@ -56,5 +56,8 @@ export class WithdrawalsService {
     return {...record, withdrawTax, withdrawMoney, arrivalMoney };
   });
   }
+  async findAll() {
+    return this.withdrawalModel.find().sort({ createdAt: -1 }).exec();
+  }
   
 }
