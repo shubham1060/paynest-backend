@@ -24,7 +24,7 @@ export class FeedbackService {
     });
 
     if (existingFeedback) {
-      throw new BadRequestException('You can only submit feedback once per day.');
+      throw new BadRequestException('You can submit feedback one time in a day.');
     }
 
     // Create new feedback

@@ -12,6 +12,7 @@ import { CommissionModule } from './commission/commission.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { RechargeModule } from './recharge/recharge.module';
 import { AdminModule } from './admin/admin.module';
+import { QrModule } from './qr/qr.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AdminModule } from './admin/admin.module';
     FeedbackModule,
     RechargeModule,
     AdminModule,
+    QrModule,
   ],
   controllers: [AppController],
   providers: [AppService],
