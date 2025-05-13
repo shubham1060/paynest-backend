@@ -60,17 +60,17 @@ export class InvestmentService {
     DA: {
       name: 'Daily Income A',
       investAmount: 300,
-      totalEarning: 900,
+      totalEarning: 1500,
       returnPeriod: '30 Day',
-      periodicReturn: 30,
+      periodicReturn: 50,
       earningChances: 29,
     },
     DB: {
       name: 'Daily Income B',
       investAmount: 800,
-      totalEarning: 2400,
+      totalEarning: 3450,
       returnPeriod: '30 Day',
-      periodicReturn: 80,
+      periodicReturn: 115,
       earningChances: 29,
     },
     DC: {
