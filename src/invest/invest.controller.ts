@@ -3,7 +3,7 @@ import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { InvestmentService, EarningRecord } from './invest.service';
 import { CreateInvestmentDto } from './invest.dto';
 
-@Controller('invest')
+@Controller('api/invest')
 export class InvestmentController {
   constructor(private readonly investmentService: InvestmentService) { }
 

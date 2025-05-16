@@ -1,6 +1,6 @@
 import { Controller, Post, Body } from '@nestjs/common';
 
-@Controller('qr')
+@Controller('api/qr')
 export class QrController {
   @Post('generate')
   generateQr(@Body() body: { upiId: string; amount: number }) {
