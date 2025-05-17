@@ -152,6 +152,17 @@ export class InvestmentService {
     user.rechargeAmount -= dto.investAmount;
     await user.save();
 
+    const now = new Date();
+    let nextPayoutDate = new Date(now);
+
+    if (plan.returnPeriod === '1 Month') {
+      nextPayoutDate.setDate(now.getDate() + 30); // 1 month = 30 days
+    } else {
+      nextPayoutDate.setDate(now.getDate() + 1); // 1 day
+    }
+
+    nextPayoutDate.setSeconds(0, 0); // normalize to minute start
+
     const investment = new this.investmentModel({
       user: user._id,
       userId: user.userId,
@@ -165,7 +176,7 @@ export class InvestmentService {
       earningChancesUsed: 0,
       earningsReceived: 0,
       isCompleted: false,
-      nextPayoutDate: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day later
+      nextPayoutDate,
     });
 
     const savedInvestment = await investment.save();

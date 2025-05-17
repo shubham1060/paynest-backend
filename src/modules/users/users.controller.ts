@@ -78,10 +78,10 @@ export class UsersController {
 
   // @UseGuards(AuthGuard('jwt')) // Only use this in "change password while logged in"
   @Post('reset-password')
-  async resetPassword( @Req() req: Request, @Body() dto: { phoneNumber?: string; password: string }) {
+  async resetPassword(@Req() req: Request, @Body() dto: { phoneNumber?: string; password: string }) {
     const authHeader = req.headers['authorization'];
     let phoneNumber = dto.phoneNumber;
-  
+
     if (authHeader?.startsWith('Bearer ')) {
       const token = authHeader.split(' ')[1];
       const decoded = this.jwtService.decodeToken(token);
@@ -89,14 +89,14 @@ export class UsersController {
         phoneNumber = decoded.phoneNumber;
       }
     }
-  
+
     if (!phoneNumber || !dto.password) {
       throw new BadRequestException('Phone number and password are required');
     }
-  
+
     return this.usersService.resetPasswordWithPhone(phoneNumber, dto.password);
   }
-  
+
 
   // @Post('reset-password')
   // async resetPassword(@Body() dto: ResetPasswordDto) {
