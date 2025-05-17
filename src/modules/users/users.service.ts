@@ -47,7 +47,7 @@ export class UsersService {
   async findById(id: string): Promise<User | null> {
     return this.userModel.findById(id).select('-password'); // Exclude password
   }
-  
+
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     private readonly jwtService: JwtService
@@ -64,7 +64,7 @@ export class UsersService {
       const lastUser = await this.userModel.findOne().sort({ userId: -1 });
       const nextUserId = lastUser?.userId ? (parseInt(lastUser.userId) + 1).toString() : '4000001';
 
-      const referralCode  = generateReferralCode();
+      const referralCode = generateReferralCode();
       // console.log('invitationCode==43==>', referralCode);
       // Create new user with bankAccount and userId
       const newUser = new this.userModel({
@@ -134,17 +134,16 @@ export class UsersService {
 
   async resetPasswordWithPhone(phoneNumber: string, newPassword: string) {
     const user = await this.userModel.findOne({ phoneNumber });
-  
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
     user.password = newPassword;
     await user.save();
-  
+
     return { message: 'Password reset successful' };
   }
-  
-  
+
   async findAll(): Promise<User[]> {
     return this.userModel.find().sort({ createdAt: -1 }).exec();
   }
