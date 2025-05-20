@@ -312,16 +312,16 @@ export class InvestmentService {
         const payoutDate = new Date(baseDate);
         payoutDate.setDate(payoutDate.getDate() + 30);
         records.push({
-          date: payoutDate.toISOString().split('T')[0],
+          date: payoutDate.toISOString(),
           productName,
           amountReceived: periodicReturn,
         });
-      } else {
+      } else if (earningChancesUsed > 0) {
         for (let i = 0; i < earningChancesUsed; i++) {
           const payoutDate = new Date(baseDate);
           payoutDate.setDate(payoutDate.getDate() + i + 1);
           records.push({
-            date: payoutDate.toISOString().split('T')[0],
+            date: payoutDate.toISOString(),
             productName,
             amountReceived: periodicReturn,
           });
@@ -335,6 +335,6 @@ export class InvestmentService {
   }
 
   async findAll(): Promise<Investment[]> {
-    return this.investmentModel.find().populate('user', 'name email').exec();
+    return this.investmentModel.find().populate('user', 'name email').sort({ createdAt: -1 }).exec();
   }
 }
