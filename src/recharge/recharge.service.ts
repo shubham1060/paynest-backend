@@ -10,7 +10,7 @@ import { Recharge, RechargeDocument } from '../schemas/recharge.schema';
 export class RechargeService {
   constructor(
     @InjectModel(Recharge.name) private rechargeModel: Model<RechargeDocument>,
-  ) {}
+  ) { }
 
   async createRecharge(createRechargeDto: CreateRechargeDto): Promise<Recharge> {
     const newRecharge = new this.rechargeModel({
@@ -20,7 +20,16 @@ export class RechargeService {
     return await newRecharge.save();
   }
 
-  async findAll(): Promise<Recharge[]> {
-    return this.rechargeModel.find().exec();
-  }
+  async findAll(limit: number, skip: number): Promise<[Recharge[], number]> {
+  const data = await this.rechargeModel
+    .find()
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
+    .exec();
+
+  const total = await this.rechargeModel.countDocuments().exec();
+  // console.log('RechargeService:32 total=', total, 'data.length32=', data.length);
+  return [data, total];
+}
 }

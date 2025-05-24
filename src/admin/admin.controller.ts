@@ -5,6 +5,7 @@ import { Response } from 'express';
 import sendResponse from 'src/middleware/sendResponse';
 import { __ } from 'i18n';
 import { Recharge, RechargeDocument } from '../schemas/recharge.schema';
+import { Withdrawal, WithdrawalDocument } from '../schemas/withdraw.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -13,13 +14,15 @@ export class AdminController {
   constructor(
     @InjectModel(Recharge.name)
     private readonly rechargeModel: Model<RechargeDocument>,
+    @InjectModel(Withdrawal.name)
+    private readonly withdrawalModel: Model<WithdrawalDocument>,
     private readonly adminService: AdminService,
     private readonly jwtService: JwtService,
   ) { }
 
   @Post('login')
   async adminLogin(@Body() loginDto: { phoneNumber: string; password: string }, @Res() res: Response) {
-    // console.log('loginDto==14=>', loginDto);
+    console.log('loginDto==14=>', loginDto);
     try {
       const user = await this.adminService.validateAdmin(loginDto.phoneNumber, loginDto.password);
       const token = this.jwtService.generateToken({ id: user?._id, phoneNumber: user?.phoneNumber, userId: user?.userId, isAdmin: user?.isAdmin || false });
@@ -98,4 +101,26 @@ export class AdminController {
 
     return { success: true, data: recharge };
   }
+
+  @Patch('/admin/update-withdrawal-status/:userId')
+  async updateWithdrawalStatus(
+    @Param('userId') userId: string,
+    @Body('status') status: 'Payment Success' | 'Payment Failed',
+  ) {
+    const withdrawal = await this.withdrawalModel.findOne({
+      userId: userId,
+      status: 'Payment Pending', // Only update if current status is Pending
+    });
+
+    if (!withdrawal) {
+      throw new NotFoundException('Withdrawal not found or already processed');
+    }
+
+    withdrawal.status = status;
+    withdrawal.updatedAt = new Date(); // Update timestamp manually
+    await withdrawal.save();
+
+    return { success: true, message: `Withdrawal marked as ${status}` };
+  }
+
 }

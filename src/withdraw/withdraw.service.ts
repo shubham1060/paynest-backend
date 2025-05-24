@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { WithdrawDto } from './withdraw.dto';
@@ -12,10 +12,10 @@ export class WithdrawalsService {
     private readonly withdrawalModel: Model<WithdrawalDocument>,
     @InjectModel(User.name)
     private readonly userModel: Model<UserDocument>,
-  ) {}
+  ) { }
 
   async processWithdrawal(body: WithdrawDto) {
-    const { userId, amount, bankAccountId } = body;
+    const { userId, amount, bankAccount } = body;
 
     // 1. Fetch the user
     const user = await this.userModel.findOne({ userId }); // if userId is a string
@@ -32,7 +32,7 @@ export class WithdrawalsService {
     const withdrawal = new this.withdrawalModel({
       userId: user.userId,
       amount,
-      bankAccountId,
+      bankAccount,
       status: 'Payment Pending',
     });
 
@@ -49,15 +49,31 @@ export class WithdrawalsService {
     const records = await this.withdrawalModel.find({ userId }).sort({ createdAt: -1 }).lean(); // lean() makes the result plain JS objects
 
     return records.map((record) => {
-        const withdrawMoney = record.amount;
-        const withdrawTax = parseFloat((withdrawMoney / 10).toFixed(2));
-        const arrivalMoney = parseFloat((withdrawMoney - withdrawTax).toFixed(2));
+      const withdrawMoney = record.amount;
+      const withdrawTax = parseFloat((withdrawMoney / 10).toFixed(2));
+      const arrivalMoney = parseFloat((withdrawMoney - withdrawTax).toFixed(2));
 
-    return {...record, withdrawTax, withdrawMoney, arrivalMoney };
-  });
+      return { ...record, withdrawTax, withdrawMoney, arrivalMoney };
+    });
   }
   async findAll() {
     return this.withdrawalModel.find().sort({ createdAt: -1 }).exec();
   }
-  
-}
+
+  async updateStatus(withdrawalId: string, status: 'Payment Success' | 'Payment Failed') {
+    const withdrawal = await this.withdrawalModel.findById(withdrawalId);
+    if (!withdrawal) {
+      throw new NotFoundException('Withdrawal not found');
+    }
+
+    if (withdrawal.status !== 'Payment Pending') {
+      throw new BadRequestException('Withdrawal already processed');
+    }
+
+    withdrawal.status = status;
+    withdrawal.updatedAt = new Date();
+    await withdrawal.save();
+
+    return { success: true, message: 'Withdrawal status updated successfully' };
+  }
+} 

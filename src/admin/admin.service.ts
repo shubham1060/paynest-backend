@@ -16,19 +16,19 @@ export class AdminService {
     @InjectModel(Withdrawal.name) private withdrawModel: Model<Withdrawal>,
     @InjectModel(Commission.name) private commissionModel: Model<Commission>,
     private readonly jwtService: JwtService
-  ) {}
+  ) { }
 
   async getDashboardStats() {
     const users = await this.userModel.find({}, { userId: 1, rechargeAmount: 1, balance: 1 });
     const totalUsers = users.filter(user => !!user.userId).length;
     const totalRecharge = users.reduce((sum, u) => sum + (u.rechargeAmount || 0), 0);
     const totalBalance = users.reduce((sum, u) => sum + (u.balance || 0), 0);
-  
+
     const investments = await this.investmentModel.find({}, { productName: 1, investAmount: 1 });
-  
+
     // ➕ Calculate total investment
     const totalInvestment = investments.reduce((sum, inv) => sum + (inv.investAmount || 0), 0);
-  
+
     const productCounts = [
       'Daily Income A',
       'Daily Income B',
@@ -40,13 +40,13 @@ export class AdminService {
       acc[product] = investments.filter(inv => inv.productName === product).length;
       return acc;
     }, {});
-  
+
     const withdrawals = await this.withdrawModel.find({ status: 'Payment Pending' }, { amount: 1 });
     const totalWithdraw = withdrawals.reduce((sum, w) => sum + (w.amount || 0), 0);
-  
+
     const commissions = await this.commissionModel.find({}, { commissionEarned: 1 });
     const totalCommission = commissions.reduce((sum, c) => sum + (c.commissionEarned || 0), 0);
-  
+
     return {
       totalUsers,
       totalRecharge,
@@ -57,7 +57,7 @@ export class AdminService {
       productCounts,
     };
   }
-  
+
 
   async validateAdmin(phoneNumber: string, password: string): Promise<User> {
     // console.log('phoneNumber==58=>', phoneNumber);

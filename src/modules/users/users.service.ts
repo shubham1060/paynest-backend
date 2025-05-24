@@ -51,7 +51,7 @@ export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     private readonly jwtService: JwtService
-  ) {}
+  ) { }
 
   async createUser(dto: CreateUserDto): Promise<User> {
     try {
@@ -144,7 +144,12 @@ export class UsersService {
     return { message: 'Password reset successful' };
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userModel.find().sort({ createdAt: -1 }).exec();
+  async findAll(limit = 50, skip = 0): Promise<User[]> {
+    return this.userModel
+      .find()
+      .sort({ createdAt: -1 }) // latest users first
+      .skip(skip)
+      .limit(limit)
+      .exec();
   }
 }

@@ -9,5 +9,5 @@ export class WithdrawDto {
     amount: number;
 
     @IsNotEmpty()
-    bankAccountId: string;
+    bankAccount: string;
 }

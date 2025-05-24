@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Res, HttpStatus, HttpException, Headers, UnauthorizedException, Param, Put, Req, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res, HttpStatus, HttpException, Headers, UnauthorizedException, Param, Put, Req, BadRequestException, Query } from '@nestjs/common';
 import { Response } from 'express';
 import sendResponse from 'src/middleware/sendResponse';
 import { __ } from 'i18n';
@@ -42,9 +42,21 @@ export class UsersController {
     }
   }
 
+  // @Get()
+  // async getAllUsers() {
+  //   return this.usersService.findAll();
+  // }
+
   @Get()
-  async getAllUsers() {
-    return this.usersService.findAll();
+  async getAllUsers(
+    @Query('limit') limit?: string,
+    @Query('skip') skip?: string,
+  ) {
+    const limitNum = limit ? parseInt(limit, 10) : 50; // default limit 50
+    const skipNum = skip ? parseInt(skip, 10) : 0;    // default skip 0
+
+    const users = await this.usersService.findAll(limitNum, skipNum);
+    return { success: true, data: users };
   }
 
   @Get('me')
