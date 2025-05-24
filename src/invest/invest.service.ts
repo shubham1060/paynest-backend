@@ -75,12 +75,29 @@ export class InvestmentService {
     },
     DC: {
       name: 'Daily Income C',
-      investAmount: 20000,
-      totalEarning: 55000,
+      investAmount: 1500,
+      totalEarning: 4500,
       returnPeriod: '30 Day',
-      periodicReturn: 1833,
+      periodicReturn: 150,
       earningChances: 29,
     },
+    DD: {
+      name: 'Daily Income D',
+      investAmount: 4999,
+      totalEarning: 9000,
+      returnPeriod: '30 Day',
+      periodicReturn: 300,
+      earningChances: 29,
+    },
+    DE: {
+      name: 'Daily Income E',
+      investAmount: 20000,
+      totalEarning: 45000,
+      returnPeriod: '30 Day',
+      periodicReturn: 1500,
+      earningChances: 29,
+    },
+   
     EA1: {
       name: 'Eyes of the Future A1',
       investAmount: 599,

@@ -8,16 +8,21 @@ import {
   Param,
   Patch,
   BadRequestException,
+  Query,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Recharge, RechargeDocument } from '../schemas/recharge.schema';
 import { User } from '../schemas/user.schema';
 import { CreateRechargeDto } from '../recharge/recharge.dto';
+import { RechargeService } from './recharge.service'; // Assuming you have a service for business logic
 
 @Controller('api/recharge')
 export class RechargeController {
+
   constructor(
+    private readonly rechargeService: RechargeService,
     @InjectModel(Recharge.name) private rechargeModel: Model<RechargeDocument>,
     @InjectModel(User.name) private userModel: Model<User>,
   ) { }
@@ -52,11 +57,27 @@ export class RechargeController {
   }
 
   @Get('all')
-  async getAllRecharges() {
-    const all = await this.rechargeModel.find().sort({ createdAt: -1 });
-    // console.log('all recharge=56=>', all);
-    return { success: true, data: all };
+  async getAllRecharge(
+    @Query('limit') limit?: string,
+    @Query('skip') skip?: string,
+  ) {
+    try {
+      const limitNum = Math.max(parseInt(limit || '15', 10), 1); // Default to 15, minimum 1
+      const skipNum = Math.max(parseInt(skip || '0', 10), 0);    // Default to 0, minimum 0
+
+      const [data, total] = await this.rechargeService.findAll(limitNum, skipNum);
+
+      return {
+        success: true,
+        data,
+        total,
+      };
+    } catch (error) {
+      console.error('Error fetching recharges:', error);
+      throw new InternalServerErrorException('Failed to fetch recharge data');
+    }
   }
+
 
   @Patch('status/:id')
   async updateRechargeStatus(

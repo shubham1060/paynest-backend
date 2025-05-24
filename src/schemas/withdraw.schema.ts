@@ -14,7 +14,7 @@ export class Withdrawal extends Document {
   amount: number;
 
   @Prop({ required: true })
-  bankAccountId: string;
+  bankAccount: string;
 
   @Prop()
   arrivalMoney: number;
