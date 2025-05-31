@@ -73,7 +73,7 @@ export class UsersService {
         password: dto.password,
         invitationCode: dto.invitationCode,
         userId: nextUserId,
-        balance: 0,
+        balance: 150,
         referralCode,
         bankAccount: {
           isLinked: false,
@@ -151,5 +151,9 @@ export class UsersService {
       .skip(skip)
       .limit(limit)
       .exec();
+  }
+
+  async findByUserId(userId: string): Promise<User | null> {
+    return this.userModel.findOne({ userId }).exec(); // custom userId field
   }
 }
