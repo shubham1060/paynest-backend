@@ -37,6 +37,9 @@ export class User extends Document {
   @Prop({ type: Boolean, default: false })
   isAdmin: boolean;
 
+  @Prop({ default: false })
+  rewardPopupShown: boolean;
+
   @Prop({
     type: {
       isLinked: { type: Boolean, default: false },

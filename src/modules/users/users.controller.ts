@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Res, HttpStatus, HttpException, Headers, UnauthorizedException, Param, Put, Req, BadRequestException, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res, HttpStatus, HttpException, Headers, UnauthorizedException, Param, Put, Req, BadRequestException, Query, Patch, NotFoundException } from '@nestjs/common';
 import { Response } from 'express';
 import sendResponse from 'src/middleware/sendResponse';
 import { __ } from 'i18n';
@@ -41,7 +41,6 @@ export class UsersController {
       return res.status(status).send(sendResponse(__('error.logging_in'), { error: error.message }, false));
     }
   }
-
   // @Get()
   // async getAllUsers() {
   //   return this.usersService.findAll();
@@ -109,7 +108,19 @@ export class UsersController {
     return this.usersService.resetPasswordWithPhone(phoneNumber, dto.password);
   }
 
+  @Patch('reward-popup-seen/:userId')
+  async markRewardPopupSeen(@Param('userId') userId: string) {
+    return this.usersService.updateUserProfile(userId, { rewardPopupShown: true });
+  }
 
+  @Get(':userId')
+  async getUserById(@Param('userId') userId: string): Promise<User> {
+    const user = await this.usersService.findByUserId(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
   // @Post('reset-password')
   // async resetPassword(@Body() dto: ResetPasswordDto) {
   //   console.log("Resetting password for:", dto);
